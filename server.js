@@ -81,10 +81,10 @@ app.get("/customers/:customerId", function(req, res) {
 }); 
 
 app.get("/customers/:customerId/bookings", (req, res) =>  {
-const customerid = 
+const customerId = req.params.customerId; 
   pool.query(
     " select bookings.customer_id, hotels.name, hotels.postcode, bookings.nights, bookings.checkin_date " + 
-      "from bookings join hotels on bookings.hotel_id=hotels.id " + "where customerid = $1 ", 
+      "from bookings join hotels on bookings.hotel_id=hotels.id " + "where customer_id = $1 ", 
     (error, result) =>  {
       res.json(result.rows); 
     }); 
