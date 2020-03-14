@@ -80,15 +80,20 @@ app.get("/customers/:customerId", function(req, res) {
   .catch(err => res.status(500).send(error)); 
 }); 
 
-app.get("/customers/:customerId/bookings", (req, res) =>  {
-const customerId = req.params.customerId; 
-  pool.query(
-    " select bookings.customer_id, hotels.name, hotels.postcode, bookings.nights, bookings.checkin_date " + 
-      "from bookings join hotels on bookings.hotel_id=hotels.id " + "where customer_id = $1 ", 
-    (error, result) =>  {
-      res.json(result.rows); 
-    }); 
+app.get("/customers/:customerId/bookings", function(req, res) {
+  const customerId = req.params.customerId; 
+
+  const query = 
+    "select checkin_date ,nights, name, postcode " + 
+    "from bookings join hotels on bookings.hotel_id = hotels.id " + 
+    "where customer_id = $1"; 
+
+  pool
+    .query(query, [customerId])
+    .then(result => res.json(result.rows))
+    .catch(err => res.status(500).send(error)); 
 }); 
+
 
 app.post("/customers", function(req, res) {
   const newName = req.body.name; 
