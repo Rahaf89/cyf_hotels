@@ -58,25 +58,33 @@ app.post("/hotels", function(req, res) {
     }); 
 }); 
 app.get("/customers", function(req, res) {
+  const customerNameQuery = req.query.name
+
+  let query = "SELECT * FROM customers ORDER BY name"
+
+  if (customerNameQuery) {
+    query = `SELECT * FROM customers WHERE name ilike '%${customerNameQuery}%' ORDER BY name `
+  }
+
   pool
-    .query("SELECT * FROM customers ORDER BY name")
+    .query(query)
     .then(result => res.json(result.rows))
     .catch(err => res.status(500).send(error)); 
 }); 
 
-app.get("/customers/:customersId", function(req, res) {
-  const customersId = req.params.customersId; 
+app.get("/customers/:customerId", function(req, res) {
+  const customerId = req.params.customerId
 
-  pool.query("SELECT * FROM customers WHERE id=$1", [customersId])
-      .then(result => res.json(result.rows))
-      .catch(e => console.error(e)); 
+  pool.query("SELECT * FROM customers where id = $1", [customerId])
+  .then(result => res.json(result.rows))
+  .catch(err => res.status(500).send(error)); 
 }); 
 
 app.get("/customers/:customerId/bookings", (req, res) =>  {
-
+const customerid = 
   pool.query(
-    "select bookings.customer_id, hotels.name, hotels.postcode, bookings.nights, bookings.checkin_date " + 
-      "from bookings join hotels on bookings.hotel_id=hotels.id", 
+    " select bookings.customer_id, hotels.name, hotels.postcode, bookings.nights, bookings.checkin_date " + 
+      "from bookings join hotels on bookings.hotel_id=hotels.id " + "where customerid = $1 ", 
     (error, result) =>  {
       res.json(result.rows); 
     }); 
