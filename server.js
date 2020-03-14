@@ -75,7 +75,7 @@ app.get("/customers/:customersId", function(req, res) {
 app.get("/customers/:customerId/bookings", (req, res) =>  {
 
   pool.query(
-    "select hotels.name, hotels.postcode, bookings.nights, bookings.checkin_date " + 
+    "select bookings.customer_id, hotels.name, hotels.postcode, bookings.nights, bookings.checkin_date " + 
       "from bookings join hotels on bookings.hotel_id=hotels.id", 
     (error, result) =>  {
       res.json(result.rows); 
