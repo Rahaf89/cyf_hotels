@@ -57,6 +57,7 @@ app.post("/hotels", function(req, res) {
       }
     }); 
 }); 
+
 app.get("/customers", function(req, res) {
   const customerNameQuery = req.query.name
 
@@ -128,6 +129,15 @@ app.post("/customers", function(req, res) {
           .catch(e => res.status(500).send(e)); 
       }
     }); 
+}); 
+
+app.put("/customers/:customerId", function(req, res) {
+  const customerId = req.params.customerId; 
+  const newEmail = req.body.email; 
+
+  pool.query("UPDATE customers SET email=$1 WHERE id=$2", [newEmail, customerId])
+      .then(() => res.send(`Customer $ {customerId}updated ! `))
+      .catch(e => console.error(e)); 
 }); 
 
 app.listen(3000, function() {
