@@ -133,14 +133,29 @@ app.post("/customers", function(req, res) {
 
 app.put("/customers/:customerId", function(req, res) {
   const customerId = req.params.customerId; 
+  const newName = req.body.name; 
   const newEmail = req.body.email; 
+  const newAddress = req.body.address; 
+  const newCity = req.body.city; 
+  const newCountry = req.body.country; 
+  const newPostcode = req.body.postcode; 
 
   if ( ! newEmail || newEmail === "") {
-    return res.status(404).send("The email is not valid")
+    return res.status(404).send("The mail is not valid")
   }
 
-  pool.query("UPDATE customers SET email=$1 WHERE id=$2", [newEmail, customerId])
-      .then(() => res.send(`Customer $ {customerId}updated ! `))
+  pool.query(
+    "UPDATE customers SET email=$1, address=$2, city=$3, country=$4, postcode=$5, name=$6 WHERE id=$7", 
+    [newEmail, newAddress, newCity, newCountry, newPostcode, newName, customerId])
+      .then(() => res.send(`Customer ${customerId}updated ! `))
+      .catch(e => console.error(e)); 
+}); 
+
+app.delete("/customers/:customerId", function(req, res) {
+  const customerId = req.params.customerId; 
+
+  pool.query("DELETE FROM customers WHERE id=$1", [customerId])
+      .then(() => res.send(`Customer ${customerId} deleted! `))
       .catch(e => console.error(e)); 
 }); 
 
