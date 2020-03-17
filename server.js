@@ -58,6 +58,20 @@ app.post("/hotels", function(req, res) {
     }); 
 }); 
 
+app.delete("/hotels/:hotelId", function(req, res){
+  const hotelId = req.params.hotelId
+
+  pool.query("DELETE FROM bookings WHERE hotel_id=$1", [hotelId])
+    .then(()=> {
+
+      pool.query("DELETE FROM hotels WHERE id=$1", [hotelId])
+        .then(()=> res.send(`Hotel with id ${hotelId} deleted!!!`))
+        .catch( e => res.status(500).send(e))
+
+    })
+    .catch( e => res.status(500).send(e))
+});
+
 app.get("/customers", function(req, res) {
   const customerNameQuery = req.query.name
 
