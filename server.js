@@ -135,6 +135,10 @@ app.put("/customers/:customerId", function(req, res) {
   const customerId = req.params.customerId; 
   const newEmail = req.body.email; 
 
+  if ( ! newEmail || newEmail === "") {
+    return res.status(404).send("The email is not valid")
+  }
+
   pool.query("UPDATE customers SET email=$1 WHERE id=$2", [newEmail, customerId])
       .then(() => res.send(`Customer $ {customerId}updated ! `))
       .catch(e => console.error(e)); 
